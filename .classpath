@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/aclink4126/Google Drive/CSCI/CSCI_373_(SoftEng)/SomeMoreShapes/drawings.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/Users/aclink4126/Google%20Drive/CSCI/CSCI_373_(SoftEng)/SomeMoreShapes/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
