@@ -15,6 +15,9 @@ public class Draw {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		new MyDrawing();
+		//test.hideAllPoints();
 
 		/** In order to add organization, and to have a "menu" that can be repeatedly called
 		this instance variable is created access all of the private methods within Draw*/
