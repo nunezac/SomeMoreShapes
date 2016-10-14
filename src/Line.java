@@ -3,7 +3,7 @@
  */
 
 import java.util.ArrayList;
-import csci348.drawings.Drawing;
+import csci348.drawings.SimpleDrawing;
 
 /**
  * @author aclink4126
@@ -79,7 +79,7 @@ public static ArrayList<Line> allLines = new ArrayList<>();
 		b = y - (int)(m * x);
 	}
 	
-	public void drawLine(Drawing pencil) {
+	public void drawLine(SimpleDrawing pencil) {
 		
 		int currentX, currentY;
 		if (m <= .5 && m >= -.5) {
@@ -100,7 +100,7 @@ public static ArrayList<Line> allLines = new ArrayList<>();
 		}
 	}
 	
-	public static void drawAllLines(Drawing pencil) {
+	public static void drawAllLines(SimpleDrawing pencil) {
 		
 		int max = allLines.size();
 		

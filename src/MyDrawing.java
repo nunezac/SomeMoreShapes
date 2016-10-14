@@ -1,3 +1,4 @@
+//import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 //import java.awt.Color;
 
@@ -13,44 +14,90 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 	
 	private final static int ICONSIZE = 40;
 	private static Icon selectedIcon = Icon.POINTER;
+	private boolean isDrawing = false;
+	private int[] savedPoint = {0, 0};
 	
 	private enum Icon {
 		POINTER, CIRCLE, BOX, PARALLELAGRAM,
 		DIAMOND, TRIANGLE, ARROW, LINE, TRASH;
 		
 		public static void setHighlight(int width) {
-			if (width < ICONSIZE) {
-				selectedIcon = Icon.POINTER;
-			} else if (width < 2 * ICONSIZE) {
-				selectedIcon = Icon.CIRCLE;
-			} else if (width < 3 * ICONSIZE) {
-				selectedIcon = Icon.BOX;
-			} else if (width < 4 * ICONSIZE) {
-				selectedIcon = Icon.PARALLELAGRAM;
-			} else if (width < 5 * ICONSIZE) {
-				selectedIcon = Icon.DIAMOND;
-			} else if (width < 6 * ICONSIZE) {
-				selectedIcon = Icon.TRIANGLE;
-			} else if (width < 7 * ICONSIZE) {
-				selectedIcon = Icon.ARROW;
-			} else if (width < 8 * ICONSIZE) {
-				selectedIcon = Icon.LINE;
+			if (width < POINTER.rightBound()) {
+				selectedIcon = POINTER;
+			} else if (width < CIRCLE.rightBound()) {
+				selectedIcon = CIRCLE;
+			} else if (width < BOX.rightBound()) {
+				selectedIcon = BOX;
+			} else if (width < PARALLELAGRAM.rightBound()) {
+				selectedIcon = PARALLELAGRAM;
+			} else if (width < DIAMOND.rightBound()) {
+				selectedIcon = DIAMOND;
+			} else if (width < TRIANGLE.rightBound()) {
+				selectedIcon = TRIANGLE;
+			} else if (width < ARROW.rightBound()) {
+				selectedIcon = ARROW;
+			} else if (width < LINE.rightBound()) {
+				selectedIcon = LINE;
 			} else {
-				selectedIcon = Icon.TRASH;
+				selectedIcon = TRASH;
+			}
+		}
+		
+		public int leftBound() {
+			switch(this) {
+			case POINTER:
+				return 0;
+			case CIRCLE:
+				return ICONSIZE;
+			case BOX:
+				return ICONSIZE * 2;
+			case PARALLELAGRAM:
+				return ICONSIZE * 3;
+			case DIAMOND:
+				return ICONSIZE * 4;
+			case TRIANGLE:
+				return ICONSIZE * 5;
+			case ARROW:
+				return ICONSIZE * 5;
+			case LINE:
+				return ICONSIZE * 6;
+			case TRASH:
+				return ICONSIZE * 7;
+			default:
+				return -1;
+			}
+		}
+		
+		public int rightBound() {
+			switch(this) {
+			case POINTER:
+				return ICONSIZE;
+			case CIRCLE:
+				return ICONSIZE * 2;
+			case BOX:
+				return ICONSIZE * 3;
+			case PARALLELAGRAM:
+				return ICONSIZE * 4;
+			case DIAMOND:
+				return ICONSIZE * 5;
+			case TRIANGLE:
+				return ICONSIZE * 6;
+			case ARROW:
+				return ICONSIZE * 7;
+			case LINE:
+				return ICONSIZE * 8;
+			case TRASH:
+				return ICONSIZE * 9;
+			default:
+				return -1;
 			}
 		}
 	}
 	
-	MyDrawing() {
+	public MyDrawing() {
 		super();
 		
-		for (int i = 0; i < ICONSIZE * 9; i++) {
-			for (int j = 0; j < ICONSIZE; j++) {
-				showPoint(0 + i, 0 + j);
-			}
-		}
-		
-		drawIcons();
+		redrawPage();
 	}
 	
 //	MyDrawing(int width, int height) {
@@ -62,13 +109,40 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		int x = event.getX();
 		int y = event.getY();
 		
-		if (y < ICONSIZE && x < ICONSIZE * 9) {
+		if (y < ICONSIZE && x < Icon.TRASH.rightBound()) {
 			Icon.setHighlight(x);
-			drawIcons();
+		} else if (selectedIcon == Icon.LINE){
+			if (isDrawing) {
+				new Line(savedPoint[0], savedPoint[1], x, y);
+				isDrawing = false;
+			} else {
+				savedPoint[0] = x;
+				savedPoint[1] = y;
+				isDrawing = true;
+			}
 		}
+		
+		redrawPage();
 	}
 	
-	private void drawIcons() {
+//	@Override
+//	public void componentResized(ComponentEvent event) {
+//		
+//		super.componentResized(event);
+//		
+//		if (getSize().height > 400) {
+//			setSize(getSize().width, 400);
+//		}
+//	}
+	
+	private void redrawPage() {
+		hideAllPoints();
+		
+		for (int i = 0; i < Icon.TRASH.rightBound(); i++) {
+			for (int j = 0; j < ICONSIZE; j++) {
+				showPoint(0 + i, 0 + j);
+			}
+		}
 		
 		drawPointerIcon(0, 0);
 		drawCircleIcon(ICONSIZE, 0);
@@ -79,6 +153,8 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		drawArrowIcon(ICONSIZE * 6, 0);
 		drawLineIcon(ICONSIZE * 7, 0);
 		drawTrashIcon(ICONSIZE * 8, 0);
+		
+		Line.drawAllLines(this);
 	}
 	
 	private void drawPointerIcon(int startX, int startY) {
