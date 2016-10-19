@@ -124,4 +124,10 @@ public class Line implements FlowchartObject {
 			}
 		}
 	}
+
+	@Override
+	public void setThirdParam(int x, int y) {
+		// This method has no use in this object
+		
+	}
 }

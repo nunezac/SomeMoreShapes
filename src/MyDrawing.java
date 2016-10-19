@@ -16,6 +16,7 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 	private ArrayList<FlowchartObject> objectList;
 	private static Icon selectedIcon;
 	private boolean isDrawing;
+	private boolean isThirdPoint;
 	private int[] savedPoint = {0, 0};
 	
 	private enum Icon {
@@ -237,6 +238,7 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		objectList = new ArrayList<>();
 		selectedIcon = Icon.POINTER;
 		isDrawing = false;
+		isThirdPoint = false;
 		
 		redrawPage();
 	}
@@ -251,12 +253,14 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		if (y < ICONSIZE && x < Icon.TRASH.rightBound()) {
 			
 			Icon.setHighlight(x);
+			isDrawing = false;
+			isThirdPoint = false;
 			
 		} else if (isDrawing) {
 			
 			isDrawing = false;
 			drawObject(event, event.getX(), event.getY());
-		} else if (selectedIcon != Icon.POINTER || selectedIcon != Icon.TRASH) {
+		} else if (selectedIcon != Icon.POINTER && selectedIcon != Icon.TRASH) {
 			
 			savedPoint[0] = event.getX();
 			savedPoint[1] = event.getY();
@@ -281,6 +285,14 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		case CIRCLE:
 			break;
 		case BOX:
+			if (!isThirdPoint) {
+				isDrawing = true;
+				objectList.add(new Box(savedPoint[0], savedPoint[1], x));
+				isThirdPoint = true;
+			} else {
+				objectList.get(objectList.size() - 1).setThirdParam(x, y);
+				isThirdPoint = false;
+			}
 			break;
 		case PARALLELAGRAM:
 			break;
@@ -328,7 +340,6 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 	}
 	
 	private void drawPoint(int x, int y) {
-		System.out.println("Point drawn: " + x + "," + y);
 		
 		int translateX = x - 1;
 		int translateY = y - 1;

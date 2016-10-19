@@ -1,48 +1,23 @@
-/**
- * 
- */
-
-import java.util.ArrayList;
-import csci348.drawings.*;
+import csci348.drawings.SimpleDrawing;;
 
 /**
  * @author aclink4126
  *
  */
-public class Box {
-	
-public static ArrayList<Box> allBoxes = new ArrayList<>();
-	
-	private final int NO = 0;
-	private final int YES = 1;
+public class Box implements FlowchartObject {
 	
 	private int centerX;
 	private int centerY;
-	private int height;
-	private int width;
+	private int halfHeight;
+	private int halfWidth;
 	
-	private int oddHeight;
-	private int oddWidth;
-	
-	public Box(int x, int y, int height, int width) {
+	public Box(int x1, int y1, int x2) {
 		
-		centerX = x;
-		centerY = y;
-		this.height = height;
-		this.width = width;
+		centerX = x1;
+		centerY = y1;
 		
-		if ((height % 2) == 0) {
-			oddHeight = NO;
-		} else {
-			oddHeight = YES;
-		}
-		if ((width % 2) == 0) {
-			oddWidth = NO;
-		} else {
-			oddWidth = YES;
-		}
-		
-		allBoxes.add(this);
+		halfWidth = Math.abs(x2 - x1);
+		halfHeight = -1;
 	}
 	
 	public int[] getCenter() {
@@ -51,66 +26,33 @@ public static ArrayList<Box> allBoxes = new ArrayList<>();
 		return center;
 	}
 	
-	public int getHeight() {
+//	public int getHeight() {
+//		
+//		return height;
+//	}
+//	
+//	public int getWidth() {
+//		
+//		return width;
+//	}
+
+	@Override
+	public void draw(SimpleDrawing pencil) {
 		
-		return height;
-	}
-	
-	public int getWidth() {
-		
-		return width;
-	}
-	
-	public void setCenter(int x, int y) {
-		
-		centerX = x;
-		centerY = y;
-	}
-	
-	public void setHeight(int height) {
-		
-		this.height = height;
-		
-		if ((height % 2) == 0) {
-			oddHeight = NO;
+		if (halfHeight == -1) {
+			new Line(centerX - halfWidth, centerY - 400, centerX - halfWidth, centerY + 400).draw(pencil);
+			new Line(centerX + halfWidth, centerY - 400, centerX + halfWidth, centerY + 400).draw(pencil);
 		} else {
-			oddHeight = YES;
+			new Line(centerX - halfWidth, centerY - halfHeight, centerX + halfWidth, centerY - halfHeight).draw(pencil);
+			new Line(centerX + halfWidth, centerY - halfHeight, centerX + halfWidth, centerY + halfHeight).draw(pencil);
+			new Line(centerX + halfWidth, centerY + halfHeight, centerX - halfWidth, centerY + halfHeight).draw(pencil);
+			new Line(centerX - halfWidth, centerY + halfHeight, centerX - halfWidth, centerY - halfHeight).draw(pencil);
 		}
 	}
-	
-	public void setWidth(int width) {
+
+	@Override
+	public void setThirdParam(int x, int y) {
 		
-		this.width = width;
-		
-		if ((width % 2) == 0) {
-			oddWidth = NO;
-		} else {
-			oddWidth = YES;
-		}
-	}
-	
-	public void drawBox(Drawing pencil) {
-		
-		int startX = centerX - ((width - oddWidth) / 2);
-		int startY = centerY - ((height - oddHeight) / 2);
-		
-		for(int x = 0; x < width; x++) {
-			pencil.showPoint(startX + x, startY);
-			pencil.showPoint(startX + x, startY + height);
-		}
-		
-		for(int y = 0; y <= height; y++) {
-			pencil.showPoint(startX, startY + y);
-			pencil.showPoint(startX + width, startY + y);
-		}
-	}
-	
-	public static void drawAllBoxes(Drawing pencil) {
-		
-		int max = allBoxes.size();
-		
-		for(int i = 0; i < max; i++) {
-			allBoxes.get(i).drawBox(pencil);
-		}
+		halfHeight = Math.abs(centerY - y);
 	}
 }
