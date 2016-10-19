@@ -1,4 +1,5 @@
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * 
@@ -12,8 +13,9 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 	
 	private final static int ICONSIZE = 40;
 	
-	private static Icon selectedIcon = Icon.POINTER;
-	private boolean isDrawing = false;
+	private ArrayList<FlowchartObject> objectList;
+	private static Icon selectedIcon;
+	private boolean isDrawing;
 	private int[] savedPoint = {0, 0};
 	
 	private enum Icon {
@@ -232,41 +234,72 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 	public MyDrawing() {
 		super();
 		
+		objectList = new ArrayList<>();
+		selectedIcon = Icon.POINTER;
+		isDrawing = false;
+		
 		redrawPage();
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent event) {
+		super.mouseClicked(event);
+		
 		int x = event.getX();
 		int y = event.getY();
 		
 		if (y < ICONSIZE && x < Icon.TRASH.rightBound()) {
+			
 			Icon.setHighlight(x);
-		} else if (selectedIcon == Icon.LINE){
-			if (isDrawing) {
-				new Line(savedPoint[0], savedPoint[1], x, y);
-				isDrawing = false;
-			} else {
-				savedPoint[0] = x;
-				savedPoint[1] = y;
-				isDrawing = true;
-			}
+			
+		} else if (isDrawing) {
+			
+			isDrawing = false;
+			drawObject(event, event.getX(), event.getY());
+		} else if (selectedIcon != Icon.POINTER || selectedIcon != Icon.TRASH) {
+			
+			savedPoint[0] = event.getX();
+			savedPoint[1] = event.getY();
+			isDrawing = true;	
 		}
 		
 		redrawPage();
 	}
 	
-//	@Override
-//	public void componentResized(ComponentEvent event) {
-//		
-//		super.componentResized(event);
-//		
-//		if (getSize().height > 400) {
-//			setSize(getSize().width, 400);
-//		}
-//	}
+	@Override
+	public void mouseMoved(MouseEvent event) {
+		super.mouseMoved(event);
+		
+		System.out.println("Mouse Moved happened.");
+	}
+	
+	public void drawObject(MouseEvent event, int x, int y) {
+		
+		switch(selectedIcon) {
+		case POINTER:
+			break;
+		case CIRCLE:
+			break;
+		case BOX:
+			break;
+		case PARALLELAGRAM:
+			break;
+		case DIAMOND:
+			break;
+		case TRIANGLE:
+			break;
+		case ARROW:
+			break;
+		case LINE:
+			objectList.add(new Line(savedPoint[0], savedPoint[1], x, y));
+			break;
+		case TRASH:
+			break;
+		}
+	}
 	
 	private void redrawPage() {
+		
 		hideAllPoints();
 		
 		for (int i = 0; i < Icon.TRASH.rightBound(); i++) {
@@ -289,10 +322,14 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 			drawPoint(savedPoint[0], savedPoint[1]);
 		}
 		
-		Line.drawAllLines(this);
+		for (int i = 0; i < objectList.size(); i++) {
+			objectList.get(i).draw(this);
+		}
 	}
 	
 	private void drawPoint(int x, int y) {
+		System.out.println("Point drawn: " + x + "," + y);
+		
 		int translateX = x - 1;
 		int translateY = y - 1;
 		for (int i = 0; i < 9; i++) {

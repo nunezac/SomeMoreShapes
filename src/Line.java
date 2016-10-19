@@ -1,22 +1,13 @@
-/**
- * 
- */
-
-import java.util.ArrayList;
 import csci348.drawings.SimpleDrawing;
 
 /**
  * @author aclink4126
  *
  */
-public class Line {
-
-public static ArrayList<Line> allLines = new ArrayList<>();
+public class Line implements FlowchartObject {
 	
 	private int[] x = new int[2];
 	private int[] y = new int[2];
-	private double m;
-	private int b;
 
 	public Line(int x1, int y1, int x2, int y2) {
 		if (x2 < x1 || (x1 == x2 && y2 < y1)) {
@@ -31,16 +22,6 @@ public static ArrayList<Line> allLines = new ArrayList<>();
 			y[0] = y1;
 			y[1] = y2;
 		}
-		
-		if (x1 == x2) {
-			m = 500;
-		} else {
-			m = (y[1] - y[0])/(x[1] - x[0]);
-		}
-		
-		b = y1 - (int)(m * x1);
-		
-		allLines.add(this);
 	}
 	
 	public int[] getXY(int index) {
@@ -74,38 +55,73 @@ public static ArrayList<Line> allLines = new ArrayList<>();
 				this.y[index] = y;
 			}
 		}
-		
-		m = (this.y[1] - this.y[0])/(this.x[1] - this.x[0]);
-		b = y - (int)(m * x);
 	}
-	
-	public void drawLine(SimpleDrawing pencil) {
+
+	@Override
+	public void draw(SimpleDrawing pencil) {
 		
-		int currentX, currentY;
-		if (m <= .5 && m >= -.5) {
-			for(currentX = x[0]; currentX < x[1]; currentX++) {
-				currentY = (int)(m * currentX) + b;
-				pencil.showPoint(currentX, currentY);
-			}
-		} else if (m >= 500 || m <= -500) {
-			currentX = x[0];
-			for(currentY = y[0]; currentY < y[1]; currentY++) {
-				pencil.showPoint(currentX, currentY);
+		int deltaX = x[1] - x[0];
+		if (deltaX != 0) {
+			int deltaY = y[1] - y[0];
+			int d = (2 * deltaY) - deltaX;
+			
+			if (deltaX > Math.abs(deltaY)) {
+				int currentY = y[0];
+				if (deltaY > 0) {
+					for (int currentX = x[0]; currentX < x[1]; currentX++) {
+						pencil.showPoint(currentX, currentY);
+						
+						if (d >= 0) {
+							currentY++;
+							d -= deltaX;
+						}
+						
+						d += deltaY;
+					}
+				} else {
+					for (int currentX = x[0]; currentX < x[1]; currentX++) {
+						pencil.showPoint(currentX, currentY);
+						
+						if (d <= 0) {
+							currentY--;
+							d += deltaX;
+						}
+						
+						d += deltaY;
+					}
+				}
+			} else {
+				int currentX = x[0];
+				if (deltaY > 0) {
+					for (int currentY = y[0]; currentY < y[1]; currentY++) {
+						pencil.showPoint(currentX, currentY);
+						
+						if (d >= 0) {
+							currentX++;
+							d -= deltaY;
+						}
+						
+						d += deltaX;
+					}
+				} else {
+					System.out.println("This happened");
+					for (int currentY = y[0]; currentY < y[1]; currentY++) {
+						pencil.showPoint(currentX, currentY);
+						
+						if (d <= 0) {
+							System.out.println(x);
+							currentX++;
+							d += deltaY;
+						}
+						
+						d += deltaX;
+					}
+				}
 			}
 		} else {
-			for(currentY = y[0]; currentY < y[1]; currentY++) {
-				currentX = (int)((currentY - b) / m);
-				pencil.showPoint(currentX, currentY);
+			for (int currentY = y[0]; currentY < y[1]; currentY++) {
+				pencil.showPoint(x[0], currentY);
 			}
-		}
-	}
-	
-	public static void drawAllLines(SimpleDrawing pencil) {
-		
-		int max = allLines.size();
-		
-		for(int i = 0; i < max; i++) {
-			allLines.get(i).drawLine(pencil);
 		}
 	}
 }
