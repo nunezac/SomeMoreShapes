@@ -270,19 +270,11 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		redrawPage();
 	}
 	
-	@Override
-	public void mouseMoved(MouseEvent event) {
-		super.mouseMoved(event);
-		
-		System.out.println("Mouse Moved happened.");
-	}
-	
 	public void drawObject(MouseEvent event, int x, int y) {
 		
 		switch(selectedIcon) {
-		case POINTER:
-			break;
 		case CIRCLE:
+			objectList.add(new Circle(savedPoint[0], savedPoint[1], x, y));
 			break;
 		case BOX:
 			if (!isThirdPoint) {
@@ -295,18 +287,35 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 			}
 			break;
 		case PARALLELAGRAM:
+			if (!isThirdPoint) {
+				isDrawing = true;
+				objectList.add(new Parallelagram(savedPoint[0], savedPoint[1], x, y));
+				isThirdPoint = true;
+			} else {
+				objectList.get(objectList.size() - 1).setThirdParam(x, y);
+				isThirdPoint = false;
+			}
 			break;
 		case DIAMOND:
+			if (!isThirdPoint) {
+				isDrawing = true;
+				objectList.add(new Diamond(savedPoint[0], savedPoint[1], x));
+				isThirdPoint = true;
+			} else {
+				objectList.get(objectList.size() - 1).setThirdParam(x, y);
+				isThirdPoint = false;
+			}
 			break;
 		case TRIANGLE:
 			objectList.add(new Triangle(savedPoint[0], savedPoint[1], x));
 			break;
 		case ARROW:
+			objectList.add(new Arrow(savedPoint[0], savedPoint[1], x, y));
 			break;
 		case LINE:
 			objectList.add(new Line(savedPoint[0], savedPoint[1], x, y));
 			break;
-		case TRASH:
+		default:
 			break;
 		}
 	}

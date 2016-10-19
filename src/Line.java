@@ -60,68 +60,42 @@ public class Line implements FlowchartObject {
 	@Override
 	public void draw(SimpleDrawing pencil) {
 		
-		int deltaX = x[1] - x[0];
-		if (deltaX != 0) {
-			int deltaY = y[1] - y[0];
-			int d = (2 * deltaY) - deltaX;
-			
-			if (deltaX > Math.abs(deltaY)) {
-				int currentY = y[0];
-				if (deltaY > 0) {
-					for (int currentX = x[0]; currentX < x[1]; currentX++) {
-						pencil.showPoint(currentX, currentY);
-						
-						if (d >= 0) {
-							currentY++;
-							d -= deltaX;
-						}
-						
-						d += deltaY;
-					}
-				} else {
-					for (int currentX = x[0]; currentX < x[1]; currentX++) {
-						pencil.showPoint(currentX, currentY);
-						
-						if (d <= 0) {
-							currentY--;
-							d += deltaX;
-						}
-						
-						d += deltaY;
-					}
-				}
-			} else {
-				int currentX = x[0];
-				if (deltaY > 0) {
-					for (int currentY = y[0]; currentY < y[1]; currentY++) {
-						pencil.showPoint(currentX, currentY);
-						
-						if (d >= 0) {
-							currentX++;
-							d -= deltaY;
-						}
-						
-						d += deltaX;
-					}
-				} else {
-					for (int currentY = y[0]; currentY > y[1]; currentY--) {
-						pencil.showPoint(currentX, currentY);
-						
-						if (d <= 0) {
-							System.out.println(x);
-							currentX++;
-							d += deltaY;
-						}
-						
-						d += deltaX;
-					}
-				}
+		int currentX = x[0];
+		int currentY = y[0];
+		double dx = x[1] - x[0];
+		int sx;
+		double dy = y[1] - y[0];
+		int sy;
+		if (dx < 0) {
+			sx = -1;
+		} else {
+			sx = 1;
+		}
+		if (dy < 0) {
+			sy = -1;
+		} else {
+			sy = 1;
+		}
+		double slope;
+		double pitch;
+				
+		if(Math.abs(dy) < Math.abs(dx)) {
+			slope = dy / dx;
+			pitch = currentY - (slope * (double)currentX);
+			while ((int)currentX != x[1]) {
+				pencil.showPoint(currentX, (int)(slope * currentX + pitch));
+				currentX += sx;
 			}
 		} else {
-			for (int currentY = y[0]; currentY < y[1]; currentY++) {
-				pencil.showPoint(x[0], currentY);
+			slope = dx / dy;
+			pitch = currentX - (slope * (double)currentY);
+			while (currentY != y[1]) {
+				pencil.showPoint((int)(slope * currentY + pitch), currentY);
+				currentY += sy;
 			}
 		}
+		
+		pencil.showPoint(x[1], y[1]);
 	}
 
 	@Override
