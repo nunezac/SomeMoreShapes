@@ -299,6 +299,7 @@ public class MyDrawing extends csci348.drawings.SimpleDrawing {
 		case DIAMOND:
 			break;
 		case TRIANGLE:
+			objectList.add(new Triangle(savedPoint[0], savedPoint[1], x));
 			break;
 		case ARROW:
 			break;

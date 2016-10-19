@@ -9,22 +9,29 @@ import csci348.drawings.SimpleDrawing;
  *
  */
 public class Triangle implements FlowchartObject {
-
-	/* (non-Javadoc)
-	 * @see FlowchartObject#draw(csci348.drawings.SimpleDrawing)
-	 */
+	
+	private final int BASECENTERX;
+	private final int BASECENTERY;
+	private final int HALFWIDTH;
+	
+	public Triangle(int x1, int y1, int x2) {
+		
+		BASECENTERX = x1;
+		BASECENTERY = y1;
+		HALFWIDTH = Math.abs(x2 - x1);
+	}
+	
 	@Override
 	public void draw(SimpleDrawing pencil) {
-		// TODO Auto-generated method stub
-
+		
+		new Line(BASECENTERX - HALFWIDTH, BASECENTERY, BASECENTERX, BASECENTERY - HALFWIDTH).draw(pencil);
+		new Line(BASECENTERX, BASECENTERY - HALFWIDTH, BASECENTERX + HALFWIDTH, BASECENTERY).draw(pencil);
+		new Line(BASECENTERX + HALFWIDTH, BASECENTERY, BASECENTERX - HALFWIDTH, BASECENTERY).draw(pencil);
 	}
 
-	/* (non-Javadoc)
-	 * @see FlowchartObject#setThirdParam(int, int)
-	 */
 	@Override
 	public void setThirdParam(int x, int y) {
-		// TODO Auto-generated method stub
+		// This method has no use in this object
 
 	}
 

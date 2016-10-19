@@ -104,8 +104,7 @@ public class Line implements FlowchartObject {
 						d += deltaX;
 					}
 				} else {
-					System.out.println("This happened");
-					for (int currentY = y[0]; currentY < y[1]; currentY++) {
+					for (int currentY = y[0]; currentY > y[1]; currentY--) {
 						pencil.showPoint(currentX, currentY);
 						
 						if (d <= 0) {
